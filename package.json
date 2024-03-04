@@ -1,0 +1,23 @@
+{
+  "name": "aio_telegram",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.ts",
+    "start": "node index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "node-telegram-bot-api": "^0.64.0",
+    "nodemon": "^3.0.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.24",
+    "@types/node-telegram-bot-api": "^0.64.3",
+    "ts-node": "^10.9.2"
+  }
+}
