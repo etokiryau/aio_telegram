@@ -33,7 +33,7 @@ export const handleMaterialsCallback = async (bot: TelegramBot, msg: CallbackQue
                                 return sum += `|"${material.description}"|"${material.inProject.value} ${unitsMap[material.units] + (material.dimension === 1 ? '' : material.dimension)}"|\n\n`
                             }, '')
     
-                            await bot.sendMessage(chatId, `Список материалов на следующий(-ие) ${payload} день(-ня):\n\n<pre>${response}</pre>`, { parse_mode: 'HTML' })
+                            await bot.sendMessage(chatId, `Список материалов на следующий(-ие) ${payload} день(-ня):\n\n<pre language="copy">${response}</pre>`, { parse_mode: 'HTML' })
                         } else  {
                             await bot.sendMessage(chatId, `Список материалов пустой на следующий(-ие) ${payload} день(-ня)`)
                         }
