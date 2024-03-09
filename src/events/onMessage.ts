@@ -3,7 +3,7 @@ import Session from "../models/Session"
 
 import { handleAuthPasswordMessage } from "../handlers/handleAuthPasswordMessage"
 import { handleAuthEmailMessage } from "../handlers/handleAuthEmailMessage"
-import { handleCommentMessage } from "../handlers/handlecommentMessage"
+import { handleCommentMessage } from "../handlers/handleCommentMessage"
 
 export const onMessage = (bot: TelegramBot) => {
     bot.on('message', async (msg) => {
