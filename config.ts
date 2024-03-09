@@ -3,7 +3,7 @@ import type { Options } from "sequelize";
 const options: Record<string, Options> = {
     development: {
         username: 'postgres',
-        password: 'rnH1-895*3P3n3E9r1V8Pu',
+        password: '',
         database: 'postgres',
         host: 'localhost',
         port: 5432,
