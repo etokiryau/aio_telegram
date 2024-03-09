@@ -7,7 +7,7 @@ export const initialiseDb = async () => {
         await sequelize.sync({alter: true})
         // await Session.sync({alter: true})
     } catch(e) {
-        console.log('Ошибка в подкллючении БД')
+        console.log('Ошибка в подключении БД')
         console.log(e)
     } 
 }
