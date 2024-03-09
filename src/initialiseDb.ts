@@ -4,9 +4,10 @@ import Session from "./models/Session"
 export const initialiseDb = async () => {
     try {
         await sequelize.authenticate()
-        await sequelize.sync()
-        await Session.sync({alter: true})
+        await sequelize.sync({alter: true})
+        // await Session.sync({alter: true})
     } catch(e) {
         console.log('Ошибка в подкллючении БД')
+        console.log(e)
     } 
 }
