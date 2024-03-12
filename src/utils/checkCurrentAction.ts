@@ -1,6 +1,6 @@
 import type TelegramBot from "node-telegram-bot-api"
 import { stopProcessOptions } from "./options"
-import type{ IModelSession } from "../interfaces/session.interface"
+import type { IModelSession } from "../interfaces/session.interface"
 
 export const checkCurrentAction = async (bot: TelegramBot, session: IModelSession | null, chatId: number) => {
 
@@ -8,7 +8,7 @@ export const checkCurrentAction = async (bot: TelegramBot, session: IModelSessio
         const action = session.getDataValue('action')
         if (action !== 'idle') {
             await bot.sendMessage(chatId, 
-                'Кажется Вы в процессе ввода данных.\nПопробуйте еще раз ввести корректные данные или можете выйти из процесса, нажав на кнопку ниже', 
+                'Кажется, Вы в процессе ввода данных.\nПопробуйте еще раз ввести корректные данные или можете заершить процесс, нажав на кнопку ниже', 
                 stopProcessOptions
             )
             return true

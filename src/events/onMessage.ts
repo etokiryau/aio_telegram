@@ -1,9 +1,11 @@
 import type TelegramBot from "node-telegram-bot-api"
 import Session from "../models/Session"
 
-import { handleAuthPasswordMessage } from "../handlers/handleAuthPasswordMessage"
-import { handleAuthEmailMessage } from "../handlers/handleAuthEmailMessage"
-import { handleCommentMessage } from "../handlers/handleCommentMessage"
+import { handleAuthPasswordMessage } from "../handlers/auth/handleAuthPasswordMessage"
+import { handleAuthEmailMessage } from "../handlers/auth/handleAuthEmailMessage"
+import { handleCommentMessage } from "../handlers/works/handleCommentMessage"
+import { handleAnotherDateMessage } from "../handlers/works/handleAnotherDateMessage"
+import { handleDeclineWorkMessage } from "../handlers/works/handleDeclineWorkMessage"
 
 export const onMessage = (bot: TelegramBot) => {
     bot.on('message', async (msg) => {
@@ -21,10 +23,14 @@ export const onMessage = (bot: TelegramBot) => {
 
                 if (action === 'auth_password') handleAuthPasswordMessage(bot, session, msg)
 
-                if (action === 'comment') handleCommentMessage(bot, session, msg)
+                if (action === 'work_comment') handleCommentMessage(bot, session, msg)
+
+                if (action === 'work_date') handleAnotherDateMessage(bot, session, msg)
+
+                if (action === 'work_decline') handleDeclineWorkMessage(bot, session, msg)
             }
         } catch {
-            bot.sendMessage(chatId, 'Что-то пошло не так')
+            bot.sendMessage(chatId, 'Что-то пошло не так при вводе данных')
         }
     })
 }

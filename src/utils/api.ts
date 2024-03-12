@@ -4,7 +4,8 @@ import dotenv from "dotenv"
 import type { IProject } from '../interfaces/project.interface';
 import type { ISummaryMaterial } from '../interfaces/materials.interface';
 import type { IWork } from '../interfaces/work.interface';
-import { ITechnologyStep } from '../interfaces/workOverview.interface';
+import type { ITechnologyStep } from '../interfaces/workOverview.interface';
+import { TUserRoles } from '../interfaces/userRoles.type';
 
 dotenv.config()
 
@@ -92,6 +93,21 @@ export const getProjects = async (token: string): Promise<TResponse<IProject[]>>
     }
 }
 
+export const getUserRoles = async (chatId: number, projectId: number): Promise<TResponse<TUserRoles[]>> => {
+    try {
+        const user = await User.findOne({ where: { chatId: chatId }})
+        if (user) {
+            const token = user.getDataValue('token')
+
+            const response = await getData(`/auth/validate?projectId=${projectId}`, token)
+            
+            return { ok: true, data: response.roles ?? [] }
+        } else return { ok: false }
+    } catch {
+        return { ok: false }
+    }
+}
+
 export const getMaterials = async (chatId: number, projectId: number): Promise<TResponse<ISummaryMaterial[]>> => {
     try {
         const user = await User.findOne({ where: { chatId: chatId }})
@@ -99,9 +115,7 @@ export const getMaterials = async (chatId: number, projectId: number): Promise<T
             const token = user.getDataValue('token')
             const materials = await getData(`/api/GetProjectMaterials?projectId=${projectId}`, token)
             return { ok: true, data: materials }
-        } else {
-            return { ok: false }
-        }
+        } else return { ok: false }
     } catch {
         return { ok: false }
     }
@@ -115,9 +129,7 @@ export const getWorks = async (chatId: number, projectId: number, duration: numb
             const start = new Date().toISOString().split('T')[0]
             const works = await getData(`/api/GetProjectWorksByPeriod?projectId=${projectId}&start=${start}&duration=${duration}`, token)
             return { ok: true, data: works }
-        } else {
-            return { ok: false }
-        }
+        } else return { ok: false }
     } catch {
         return { ok: false }
     }
@@ -131,7 +143,7 @@ export const getWorkTechSteps = async (chatId: number, workId: number): Promise<
             const response = await getData(`/api/GetWorkTechSteps?workId=${workId}`,token);
             return { ok: true, data: response.steps }
         } else return { ok: false }
-    } catch (e) {
+    } catch {
         return { ok: false }
     }
 }
@@ -145,6 +157,76 @@ export const addWorkComment = async (chatId: number, workId: number, comment: st
                 `/api/AddWorkComments?workId=${workId}&comment=${comment}`, 
                 token
             );
+            return true
+        } else return false
+    } catch {
+        return false
+    }
+}
+
+export const startWork = async (chatId: number, workId: number, date?: string): Promise<boolean> => {
+    try {
+        const user = await User.findOne({ where: { chatId: chatId }})
+        if (user) {
+            const token = user.getDataValue('token')
+
+            await getData(
+                `/api/StartWork?workId=${workId}${date ? `&date=${date}` : ''}`, 
+                token
+            )
+
+            return true
+        } else return false
+    } catch (e) {
+        return false
+    }
+}
+
+export const finishWork = async (chatId: number, workId: number, date?: string): Promise<boolean> => {
+    try {
+        const user = await User.findOne({ where: { chatId: chatId }})
+        if (user) {
+            const token = user.getDataValue('token')
+
+            await getData(
+                `/api/FinishWork?workId=${workId}${date ? `&date=${date}` : ''}`, 
+                token
+            )
+
+            return true
+        } else return false
+    } catch (e) {
+        return false
+    }
+}
+
+export const acceptWork = async (chatId: number, workId: number): Promise<boolean> => {
+    try {
+        const user = await User.findOne({ where: { chatId: chatId }})
+        if (user) {
+            const token = user.getDataValue('token')
+
+            await getData(
+                `/api/AcceptWork?workId=${workId}`, 
+                token
+            )
+            return true
+        } else return false
+    } catch (e) {
+        return false
+    }
+}
+
+export const declineWork = async (chatId: number, workId: number, comment: string): Promise<boolean> => {
+    try {
+        const user = await User.findOne({ where: { chatId: chatId }})
+        if (user) {
+            const token = user.getDataValue('token')
+
+            await getData(
+                `/api/DeclineWork?workId=${workId}&comment=${comment}`, 
+                token
+            )
             return true
         } else return false
     } catch (e) {

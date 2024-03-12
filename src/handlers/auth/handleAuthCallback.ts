@@ -1,6 +1,6 @@
 import type TelegramBot from "node-telegram-bot-api"
 import type { CallbackQuery } from "node-telegram-bot-api"
-import Session from "../models/Session"
+import Session from "../../models/Session"
 
 export const handleAuthCallback = async (bot: TelegramBot, msg: CallbackQuery) => {
     const { data } = msg

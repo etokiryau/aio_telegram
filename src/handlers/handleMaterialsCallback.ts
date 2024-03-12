@@ -30,7 +30,7 @@ export const handleMaterialsCallback = async (bot: TelegramBot, msg: CallbackQue
 
                         if (materials.length > 0) {
                             const response = materials.reduce((sum, material) => {
-                                return sum += `|"${material.description}"|"${material.inProject.value} ${unitsMap[material.units] + (material.dimension === 1 ? '' : material.dimension)}"|\n\n`
+                                return sum += `|${material.description}|${material.inProject.value} ${unitsMap[material.units] + (material.dimension === 1 ? '' : material.dimension)}|\n\n`
                             }, '')
     
                             await bot.sendMessage(chatId, `Список материалов на следующий(-ие) ${payload} день(-ня):\n\n<pre language="copy">${response}</pre>`, { parse_mode: 'HTML' })

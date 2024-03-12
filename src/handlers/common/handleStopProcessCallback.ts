@@ -1,6 +1,6 @@
 import type TelegramBot from "node-telegram-bot-api"
 import type { CallbackQuery } from "node-telegram-bot-api"
-import Session from "../models/Session"
+import Session from "../../models/Session"
 
 export const handleStopProcessCallback = async (bot: TelegramBot, msg: CallbackQuery) => {
     const chatId = msg.message?.chat.id
@@ -17,7 +17,7 @@ export const handleStopProcessCallback = async (bot: TelegramBot, msg: CallbackQ
                 session?.update({ action: 'idle' })
             }
     
-            if (sessionAction !== 'idle') await bot.sendMessage(chatId, 'Процесс завершен')
+            if (sessionAction !== 'idle') await bot.sendMessage(chatId, 'Процесс ввода данных остановлен')
     
             messageId && await bot.deleteMessage(chatId, messageId)
         } catch {

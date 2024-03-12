@@ -35,7 +35,7 @@ export const worksPeriodOptions: SendMessageOptions = {
 
 export const getWorksOptions = (works: IWork[]): SendMessageOptions => {
     const worksKeyboard: InlineKeyboardButton[][] = []
-    const devision = Math.ceil(works.length / 5)
+    const devision = Math.ceil(works.length / 6)
     works.forEach((work, i) => {
         if (i === 0 || i % devision === 0) { worksKeyboard.push([]) }
         worksKeyboard[Math.floor(i / devision)].push({ text: String(i + 1), callback_data: JSON.stringify({ action: 'workOverview', payload: { id: work.id, order: i } }) })
@@ -52,7 +52,7 @@ export const getWorkChangeOptions = (id: number): SendMessageOptions => {
         reply_markup: { 
             inline_keyboard: [
                 [{ text: 'Статус', callback_data: JSON.stringify({ action: 'status', payload: id }) }],
-                [{ text: 'Изменить даты?', callback_data: JSON.stringify({ action: 'dates', payload: id }) }],
+                [{ text: 'Изменить даты', callback_data: JSON.stringify({ action: 'dates', payload: id }) }],
                 [{ text: 'Комментарий', callback_data: JSON.stringify({ action: 'comment', payload: id }) }],
                 [{ text: 'Назад', callback_data: JSON.stringify({ action: 'back', payload: 30 }) }, { text: 'Главная', callback_data: JSON.stringify({ action: 'home' }) }]
             ] 
@@ -60,9 +60,9 @@ export const getWorkChangeOptions = (id: number): SendMessageOptions => {
     }
 }
 
-export const getWorkStatusChangeOptions = (buttons: string[]): SendMessageOptions => {
+export const getWorkStatusChangeOptions = (buttons: {toStatus: TWorkStatus, title: string}[]): SendMessageOptions => {
     const keyboard: InlineKeyboardButton[] = buttons.map(button => {
-        return { text: button, callback_data: JSON.stringify({ action: 'statusChange' }) }
+        return { text: button.title, callback_data: JSON.stringify({ action: button.toStatus === 'declined' ? 'declineWork' : 'statusChange', toStatus: button.toStatus }) }
     })
 
     return {
@@ -72,6 +72,24 @@ export const getWorkStatusChangeOptions = (buttons: string[]): SendMessageOption
                 [{ text: 'Назад', callback_data: JSON.stringify({ action: 'back' }) }, { text: 'Главная', callback_data: JSON.stringify({ action: 'home' }) }]
             ] 
         }
+    }
+}
+
+export const statusDatesOptions: SendMessageOptions = {
+    reply_markup: { 
+        inline_keyboard: [
+            [{ text: 'Текущая дата', callback_data: JSON.stringify({ action: 'date_current' }) }],
+            [{ text: 'Другая дата', callback_data: JSON.stringify({ action: 'date_another' }) }],
+            [{ text: 'Назад', callback_data: JSON.stringify({ action: 'back' }) }, { text: 'Главная', callback_data: JSON.stringify({ action: 'home' }) }]
+        ] 
+    }
+}
+
+export const confirmOptions: SendMessageOptions = {
+    reply_markup: { 
+        inline_keyboard: [
+            [{ text: 'Подтвердить', callback_data: JSON.stringify({ action: 'confirm' }) }, { text: 'Отменить', callback_data: JSON.stringify({ action: 'cancel' }) }]
+        ] 
     }
 }
 

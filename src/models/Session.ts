@@ -29,12 +29,24 @@ const Session = sequelize.define<IModelSession>('session', {
         type: DataTypes.STRING,
         defaultValue: null
     },
+    userRoles: {
+        type: DataTypes.ARRAY(DataTypes.STRING),
+        defaultValue: null
+    },
     worksList: {
         type: DataTypes.ARRAY(DataTypes.JSON),
         defaultValue: []
     },
     currentWork: {
         type: DataTypes.JSON,
+        defaultValue: null
+    },
+    workDate: {
+        type: DataTypes.STRING,
+        defaultValue: null
+    },
+    declineComment: {
+        type: DataTypes.STRING,
         defaultValue: null
     }
 })

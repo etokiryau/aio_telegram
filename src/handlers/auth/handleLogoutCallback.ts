@@ -1,7 +1,7 @@
 import type TelegramBot from "node-telegram-bot-api"
 import type { CallbackQuery } from "node-telegram-bot-api"
-import Session from "../models/Session"
-import User from "../models/User"
+import Session from "../../models/Session"
+import User from "../../models/User"
 
 export const handleLogoutCallback = async (bot: TelegramBot, msg: CallbackQuery) => {
     const { data } = msg

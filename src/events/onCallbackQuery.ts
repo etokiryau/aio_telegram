@@ -1,13 +1,17 @@
 import type TelegramBot from "node-telegram-bot-api"
-import { handleStopProcessCallback } from "../handlers/handleStopProcessCallback"
-import { handleProjectCallback } from "../handlers/handleProjectCallback"
-import { handleLogoutCallback } from "../handlers/handleLogoutCallback"
-import { handleAuthCallback } from "../handlers/handleAuthCallback"
+import { handleStopProcessCallback } from "../handlers/common/handleStopProcessCallback"
+import { handleProjectCallback } from "../handlers/common/handleProjectCallback"
+import { handleLogoutCallback } from "../handlers/auth/handleLogoutCallback"
+import { handleAuthCallback } from "../handlers/auth/handleAuthCallback"
 import { handleMaterialsCallback } from "../handlers/handleMaterialsCallback"
-import { handleWorksCallback } from "../handlers/handleWorksCallback"
-import { handleWorkOverviewCallback } from "../handlers/handleWorkOverviewCallback"
-import { handleCommentCallback } from "../handlers/handleCommentCallback"
-import { handleStatusCallback } from "../handlers/handleStatusCallback"
+import { handleWorksCallback } from "../handlers/works/handleWorksCallback"
+import { handleWorkOverviewCallback } from "../handlers/works/handleWorkOverviewCallback"
+import { handleCommentCallback } from "../handlers/works/handleCommentCallback"
+import { handleStatusCallback } from "../handlers/works/handleStatusCallback"
+import { handleStatusChangeCallback } from "../handlers/works/handleStatusChangeCallback"
+import { handleAnotherDateCallback } from "../handlers/works/handleAnotherDateCallback"
+import { handleCurrentDateCallback } from "../handlers/works/handleCurrentDateCallback"
+import { handleStatusConfirmCallback } from "../handlers/works/handleStatusConfirmCallback"
 
 export const onCallbackQuery = (bot: TelegramBot) => {
     bot.on('callback_query', async (msg) => {
@@ -24,6 +28,14 @@ export const onCallbackQuery = (bot: TelegramBot) => {
             if (action === 'workOverview') handleWorkOverviewCallback(bot, msg)
 
             if (action === 'status') handleStatusCallback(bot, msg)
+
+            if (action === 'statusChange') handleStatusChangeCallback(bot, msg)
+
+            if (action === 'date_current') handleCurrentDateCallback(bot, msg)
+
+            if (action === 'date_another') handleAnotherDateCallback(bot, msg)
+
+            if (action === 'confirm') handleStatusConfirmCallback(bot, msg)
 
             if (action === 'comment') handleCommentCallback(bot, msg)
 

@@ -1,4 +1,4 @@
-import type { Options } from "sequelize";
+import type { Options } from "sequelize"
 
 const options: Record<string, Options> = {
     development: {
@@ -9,6 +9,6 @@ const options: Record<string, Options> = {
         port: 5432,
         dialect: 'postgres',
     },
-};
+}
 
-export default options;
+export default options

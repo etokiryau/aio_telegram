@@ -1,10 +1,10 @@
 import type TelegramBot from "node-telegram-bot-api"
 import type { CallbackQuery } from "node-telegram-bot-api"
-import Session from "../models/Session"
-import { getWorks } from "../utils/api"
-import { statusMap } from "../utils/statusMap"
-import { getWorksOptions } from "../utils/options"
-import type { TWorkStatus } from "../interfaces/work.interface"
+import Session from "../../models/Session"
+import { getWorks } from "../../utils/api"
+import { statusMap } from "../../utils/statusMap"
+import { getWorksOptions } from "../../utils/options"
+import type { TWorkStatus } from "../../interfaces/work.interface"
 
 export const handleWorksCallback = async (bot: TelegramBot, msg: CallbackQuery) => {
     const { data } = msg
@@ -27,17 +27,21 @@ export const handleWorksCallback = async (bot: TelegramBot, msg: CallbackQuery) 
                         const works = resp.data
                         
                         if (works.length > 0) {
-                            const worksList: {name: string, status: TWorkStatus}[] = []
+                            const worksList: {name: string, workTitle: string, status: TWorkStatus}[] = []
 
                             const response = works.reduce((sum, work, i) => {
-                                const name = `${i + 1}|"${work.workTitle}"|"${work.actualStart} - ${work.actualEnd}"|"${statusMap[work.status]}"|\n\n`
-                                worksList.push({ name, status: work.status })
+                                const name = `${i + 1}|${work.workTitle}|${work.actualStart} - ${work.actualEnd}|${statusMap[work.status].emoji} - ${statusMap[work.status].name}|\n\n`
+                                worksList.push({ name, workTitle: work.workTitle, status: work.status })
                                 return sum += name
                             }, '')
                             
                             await session.update({ worksList })
                             
-                            await bot.sendMessage(chatId, `Список работ на следующий(-ие) ${payload} день(-ня, -ней):\n\n<pre language="copy">${response}</pre>\nВыберите работу для дальнейшего взаимодeйствия с ней:`, getWorksOptions(works))
+                            await bot.sendMessage(
+                                chatId, 
+                                `Список работ на следующий(-ие) ${payload} день(-ня, -ней):\n\n<pre language="copy">${response}</pre>\nВыберите работу для дальнейшего взаимодeйствия с ней:`, 
+                                getWorksOptions(works)
+                            )
                         } else {
                             await bot.sendMessage(chatId, `Список работ пустой на следующий(-ие) ${payload} день(-ня, -ней)`)
                         }

@@ -24,9 +24,9 @@ export const onProjects = (bot: TelegramBot) => {
                     const projects = resp.data
                     if (projects.length > 1) {
                         const currentProject = session.getDataValue('projectName')
-                        currentProject && await bot.sendMessage(chatId, `Активный проект - ${currentProject}`)
+                        currentProject && await bot.sendMessage(chatId, `Активный проект - *${currentProject}*`, { parse_mode: 'Markdown' })
                         const filteredProjects = projects.filter((project => project.name !== currentProject))
-                        await bot.sendMessage(chatId, 'Выберите проект, с которым хотите работать', getProjectOptions(filteredProjects))
+                        await bot.sendMessage(chatId, 'Выберите проект, с которым хотите работать:', getProjectOptions(filteredProjects))
                     } else {
                         await bot.sendMessage(chatId, `Портфель проектов состоит из одного - ${projects[0]?.name}`)
                     }
