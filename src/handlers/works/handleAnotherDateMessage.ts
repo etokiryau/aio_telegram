@@ -16,7 +16,7 @@ export const handleAnotherDateMessage = async (bot: TelegramBot, session: IModel
                     await session.update({ action: 'idle', workDate: text })
                     await bot.sendMessage(chatId, `Подтвердите действие:`, confirmOptions)
                 } else await bot.sendMessage(chatId, 'Что-то пошло не так при изменении статуса')
-            } await bot.sendMessage(chatId, 'Что-то пошло не так при изменении статуса')
+            }
         } else await bot.sendMessage(chatId, 'Что-то пошло не так при изменении статуса')
     } catch {
         await bot.sendMessage(chatId, 'Что-то пошло не так при изменении статуса')
