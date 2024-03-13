@@ -1,6 +1,7 @@
 import type { Model } from "sequelize";
 import type { TWorkStatus } from "./work.interface";
 import type { TUserRoles } from "./userRoles.type";
+import { ITechnologyStepToLoad } from "./technologyStep.interface";
 
 interface ISession {
     id?: number
@@ -14,6 +15,8 @@ interface ISession {
     currentWork?: {id: number, workTitle: string, status: TWorkStatus}
     workDate?: string
     declineComment?: string
+    technologySteps?: ITechnologyStepToLoad[]
+    currentStepToLoad?: number
 }
 
 export interface IModelSession extends Model<ISession> {}

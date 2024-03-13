@@ -5,3 +5,7 @@ export interface ITechnologyStep {
     src: string
     description: string
 }
+
+export interface ITechnologyStepToLoad extends Pick<ITechnologyStep, 'id' | 'description'> {
+    templateSrc: Buffer | null
+}

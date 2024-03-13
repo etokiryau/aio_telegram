@@ -62,7 +62,7 @@ export const getWorkChangeOptions = (id: number): SendMessageOptions => {
 
 export const getWorkStatusChangeOptions = (buttons: {toStatus: TWorkStatus, title: string}[]): SendMessageOptions => {
     const keyboard: InlineKeyboardButton[] = buttons.map(button => {
-        return { text: button.title, callback_data: JSON.stringify({ action: button.toStatus === 'declined' ? 'declineWork' : 'statusChange', toStatus: button.toStatus }) }
+        return { text: button.title, callback_data: JSON.stringify({ action: button.toStatus === 'declined' ? 'declineWork' : 'statusChange' }) }
     })
 
     return {
@@ -118,6 +118,15 @@ export const getProjectOptions = (projects: IProject[]) => {
 export const stopProcessOptions: SendMessageOptions = {
     reply_markup: { 
         inline_keyboard: [
+            [{ text: 'Завершить процесс', callback_data: JSON.stringify({ action: 'stopProcess' }) }],
+        ] 
+    }
+}
+
+export const technologyStepsUploadOptions: SendMessageOptions = {
+    reply_markup: { 
+        inline_keyboard: [
+            [{ text: 'Следующий шаг', callback_data: JSON.stringify({ action: 'teckStep_next' }) }],
             [{ text: 'Завершить процесс', callback_data: JSON.stringify({ action: 'stopProcess' }) }],
         ] 
     }

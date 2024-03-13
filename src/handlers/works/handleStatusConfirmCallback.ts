@@ -2,6 +2,7 @@ import type TelegramBot from "node-telegram-bot-api"
 import type { CallbackQuery } from "node-telegram-bot-api"
 import Session from "../../models/Session"
 import { acceptWork, finishWork, startWork } from "../../utils/api"
+import { sendTechnologyStep } from "../../utils/sendTechnologyStep"
 
 export const handleStatusConfirmCallback = async (bot: TelegramBot, msg: CallbackQuery) => {
     const data = msg.data
@@ -9,7 +10,6 @@ export const handleStatusConfirmCallback = async (bot: TelegramBot, msg: Callbac
 
     if (chatId && data) {
         try {
-            const { toStatus } = JSON.parse(data)
             const messageId = msg.message?.message_id
             messageId && await bot.deleteMessage(chatId, messageId)
         
@@ -39,15 +39,23 @@ export const handleStatusConfirmCallback = async (bot: TelegramBot, msg: Callbac
                     if (status === 'started') {
                         const ok = await finishWork(chatId, id, workDate) 
                         await sendFeedback(ok, 'Завершено')
-                        return session.update({ workDate: '' })
+                        await session.update({ workDate: '' })
+
+                        const technologySteps = session.getDataValue('technologySteps')
+
+                        if (technologySteps && technologySteps.length > 0) {
+                            await session.update({ action: 'photo', currentStepToLoad: 0 })
+                            await bot.sendMessage(chatId, 'Ожидаем список технологических подсказок...')
+                            await sendTechnologyStep(bot, chatId, session)
+                        }
+                        return
                     }
 
                     if (status === 'finished') {
                         const ok = await acceptWork(chatId, id)
-                        return sendFeedback(ok, toStatus === 'accepted' ? 'Принято' : 'Отклонено')
+                        return sendFeedback(ok, 'Принято')
                     }
                 }
-                
             }
         } catch {
             await bot.sendMessage(chatId, 'Что-то пошло не так при старте ввода комментария')

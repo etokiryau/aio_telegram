@@ -12,6 +12,7 @@ import { handleStatusChangeCallback } from "../handlers/works/handleStatusChange
 import { handleAnotherDateCallback } from "../handlers/works/handleAnotherDateCallback"
 import { handleCurrentDateCallback } from "../handlers/works/handleCurrentDateCallback"
 import { handleStatusConfirmCallback } from "../handlers/works/handleStatusConfirmCallback"
+import { handleNextTechStepCallback } from "../handlers/works/handlenextTechStepCallback"
 
 export const onCallbackQuery = (bot: TelegramBot) => {
     bot.on('callback_query', async (msg) => {
@@ -36,6 +37,8 @@ export const onCallbackQuery = (bot: TelegramBot) => {
             if (action === 'date_another') handleAnotherDateCallback(bot, msg)
 
             if (action === 'confirm') handleStatusConfirmCallback(bot, msg)
+
+            if (action === 'teckStep_next') handleNextTechStepCallback(bot, msg)
 
             if (action === 'comment') handleCommentCallback(bot, msg)
 

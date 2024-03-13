@@ -4,7 +4,7 @@ import dotenv from "dotenv"
 import type { IProject } from '../interfaces/project.interface';
 import type { ISummaryMaterial } from '../interfaces/materials.interface';
 import type { IWork } from '../interfaces/work.interface';
-import type { ITechnologyStep } from '../interfaces/workOverview.interface';
+import type { ITechnologyStep } from '../interfaces/technologyStep.interface';
 import { TUserRoles } from '../interfaces/userRoles.type';
 
 dotenv.config()
@@ -32,17 +32,17 @@ const getData = async (endpoint: string, token?: string) => {
         if (token) {
             const response = await axios({ method: 'get', url: `${BASE_URL}${endpoint}`, headers: {
                 Authorization: `Bearer ${token}`,
-            }});
-            console.log(response.data);
-            return response.data;
+            }})
+            console.log(response.data)
+            return response.data
         } else {
-            const response = await axios.get(`${BASE_URL}${endpoint}`);
+            const response = await axios.get(`${BASE_URL}${endpoint}`)
             // console.log(response.data);
-            return response.data;
+            return response.data
         }
     } catch (error) {
         console.log(error)
-        throw new Error(getErrorMessage(error));
+        throw new Error(getErrorMessage(error))
     }
 };
 
@@ -54,17 +54,17 @@ const postData = async (endpoint: string, data: any, token?: string) => {
                 url: `${BASE_URL}${endpoint}`, 
                 data, 
                 headers: { Authorization: `Bearer ${token}` },
-            });
-            console.log(response);
-            return response;
+            })
+            console.log(response)
+            return response
         } else {
-            const response = await axios({ method: 'post', url: `${BASE_URL}${endpoint}`, data });
-            console.log(response);
-            return response;
+            const response = await axios({ method: 'post', url: `${BASE_URL}${endpoint}`, data })
+            console.log(response)
+            return response
         }
     } catch (error) {
-        console.log(error);
-        throw new Error(getErrorMessage(error));
+        console.log(error)
+        throw new Error(getErrorMessage(error))
     }
 };
 
@@ -126,8 +126,10 @@ export const getWorks = async (chatId: number, projectId: number, duration: numb
         const user = await User.findOne({ where: { chatId: chatId }})
         if (user) {
             const token = user.getDataValue('token')
-            const start = new Date().toISOString().split('T')[0]
-            const works = await getData(`/api/GetProjectWorksByPeriod?projectId=${projectId}&start=${start}&duration=${duration}`, token)
+            const date = new Date()
+            date.setDate(date.getDate() - 15);
+            const start = date.toISOString().split('T')[0]
+            const works = await getData(`/api/GetProjectWorksByPeriod?projectId=${projectId}&start=${start}&duration=${duration + 15}`, token)
             return { ok: true, data: works }
         } else return { ok: false }
     } catch {
@@ -177,7 +179,7 @@ export const startWork = async (chatId: number, workId: number, date?: string): 
 
             return true
         } else return false
-    } catch (e) {
+    } catch {
         return false
     }
 }
@@ -195,7 +197,7 @@ export const finishWork = async (chatId: number, workId: number, date?: string):
 
             return true
         } else return false
-    } catch (e) {
+    } catch {
         return false
     }
 }
@@ -212,7 +214,7 @@ export const acceptWork = async (chatId: number, workId: number): Promise<boolea
             )
             return true
         } else return false
-    } catch (e) {
+    } catch {
         return false
     }
 }
@@ -229,7 +231,25 @@ export const declineWork = async (chatId: number, workId: number, comment: strin
             )
             return true
         } else return false
-    } catch (e) {
+    } catch {
+        return false
+    }
+}
+
+export const loadTempTechStepImage = async (chatId: number, projId: number, stepId: number, image: FormData): Promise<boolean> => {
+    try {
+        const user = await User.findOne({ where: { chatId: chatId }})
+        if (user) {
+            const token = user.getDataValue('token')
+            
+            await postData(
+                `/api/LoadTempTechStepImage?projId=${projId}&stepId=${stepId}`,
+                image,
+                token
+            )
+            return true
+        } else return false
+    } catch {
         return false
     }
 }

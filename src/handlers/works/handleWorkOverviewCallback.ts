@@ -4,6 +4,7 @@ import Session from "../../models/Session"
 import { getWorkTechSteps } from "../../utils/api"
 import { getWorkChangeOptions } from "../../utils/options"
 import { getImageBuffer } from "../../utils/getImageBuffer"
+import type { ITechnologyStepToLoad } from "../../interfaces/technologyStep.interface"
 
 export const handleWorkOverviewCallback = async (bot: TelegramBot, msg: CallbackQuery) => {
     const { data } = msg
@@ -12,7 +13,6 @@ export const handleWorkOverviewCallback = async (bot: TelegramBot, msg: Callback
     if (data && chatId) {
         try {
             const { payload: { id, order} } = JSON.parse(data)
-            const messageId = msg.message?.message_id
             const session = await Session.findOne({ where: { chatId }})
 
             if (session) {
@@ -30,20 +30,27 @@ export const handleWorkOverviewCallback = async (bot: TelegramBot, msg: Callback
                                 chatId, 
                                 `${worksList[order].name}\nИдет загрузка технологических подсказок...`
                             )
+
+                            const technologySteps: ITechnologyStepToLoad[] = []
     
                             for (let i = 0; i < steps.length; i++) {
                                 const step = steps[i]
                                 if (step.templateSrc) {
                                     try {
-                                        const photoBuffer = await getImageBuffer(apiUrl + step.templateSrc)
-                                        await bot.sendPhoto(chatId, photoBuffer, { caption: `*Подсказка ${i + 1}*: ${step.description}`, parse_mode: 'Markdown' }, { filename: step.templateSrc})
+                                        const imageBuffer = await getImageBuffer(apiUrl + step.templateSrc)
+                                        console.log(imageBuffer)
+                                        await bot.sendPhoto(chatId, imageBuffer, { caption: `*Подсказка ${i + 1}*: ${step.description}`, parse_mode: 'Markdown' }, { filename: step.templateSrc})
+                                        technologySteps.push({ id: step.id, templateSrc: imageBuffer, description: step.description })
                                     } catch(e) {
-                                        // console.log('photoError:', e)
+                                        console.log('photoError:', e)
                                     }
                                 } else {
                                     await bot.sendMessage(chatId, `*Подсказка ${i + 1}*: ${step.description}`, { parse_mode: 'Markdown' })
+                                    technologySteps.push({ id: step.id, templateSrc: null, description: step.description })
                                 }
                             }
+
+                            await session.update({ technologySteps })
                         } else {
                             await bot.sendMessage(
                                 chatId, 

@@ -10,6 +10,7 @@ import { onCallbackQuery } from "./src/events/onCallbackQuery"
 import { onWorks } from "./src/events/onWorks"
 import { onMaterials } from "./src/events/onMaterials"
 import { onProjects } from "./src/events/onProjects"
+import { onPhoto } from "./src/events/onPhoto"
 
 dotenv.config()
 
@@ -28,6 +29,7 @@ const start = async () => {
 
     onMessage(bot)
     onCallbackQuery(bot)
+    onPhoto(bot)
 }
 
 start()

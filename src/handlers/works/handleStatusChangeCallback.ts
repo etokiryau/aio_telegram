@@ -4,14 +4,15 @@ import Session from "../../models/Session"
 import { confirmOptions, statusDatesOptions } from "../../utils/options"
 
 export const handleStatusChangeCallback = async (bot: TelegramBot, msg: CallbackQuery) => {
-    // const { data } = msg
     const chatId = msg.message?.chat.id
 
     if (chatId) {
         try {
-            // const { payload } = JSON.parse(data)
             const messageId = msg.message?.message_id
-            // messageId && await bot.deleteMessage(chatId, messageId)
+            messageId && await bot.editMessageReplyMarkup({ inline_keyboard: [] }, {
+                chat_id: chatId,
+                message_id: messageId
+            })
         
             const session = await Session.findOne({ where: { chatId }})
 
@@ -22,7 +23,7 @@ export const handleStatusChangeCallback = async (bot: TelegramBot, msg: Callback
                     const { status } = currentWork
                     
                     if (status === 'notStarted' || status === 'started') {
-                        await bot.sendMessage(chatId, `Выберите дату ${status === 'started' ? 'начала' : 'завершения'} работы:`, statusDatesOptions)
+                        await bot.sendMessage(chatId, `Выберите дату ${status === 'started' ? 'завершения' : 'начала'} работы:`, statusDatesOptions)
                     } else {
                         await bot.sendMessage(chatId, `Подтвердите действие:`, confirmOptions)
                     }

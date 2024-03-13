@@ -48,7 +48,15 @@ const Session = sequelize.define<IModelSession>('session', {
     declineComment: {
         type: DataTypes.STRING,
         defaultValue: null
-    }
+    },
+    technologySteps: {
+        type: DataTypes.ARRAY(DataTypes.JSON),
+        defaultValue: null
+    },
+    currentStepToLoad: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0
+    },
 })
 
 export default Session
