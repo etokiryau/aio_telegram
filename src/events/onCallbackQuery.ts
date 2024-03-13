@@ -12,7 +12,7 @@ import { handleStatusChangeCallback } from "../handlers/works/handleStatusChange
 import { handleAnotherDateCallback } from "../handlers/works/handleAnotherDateCallback"
 import { handleCurrentDateCallback } from "../handlers/works/handleCurrentDateCallback"
 import { handleStatusConfirmCallback } from "../handlers/works/handleStatusConfirmCallback"
-import { handleNextTechStepCallback } from "../handlers/works/handlenextTechStepCallback"
+import { handleNextTechStepCallback } from "../handlers/works/handleNextTechStepCallback"
 
 export const onCallbackQuery = (bot: TelegramBot) => {
     bot.on('callback_query', async (msg) => {
