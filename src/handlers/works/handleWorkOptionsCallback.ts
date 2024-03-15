@@ -40,27 +40,27 @@ export const handleWorkOptionsCallback = async (bot: TelegramBot, msg: CallbackQ
                     }
 
                     if ((status === 'notStarted' || status === 'started') && !isConstructor) {
-                        return await bot.sendMessage(chatId, `${name}\n\nВозможные действия с работой:`, getWorkOptions(id))
+                        return await bot.sendMessage(chatId, `${name}Возможные действия с работой:`, getWorkOptions(id))
                     }
 
                     if (status === 'finished' && isOwner) {
-                        return await bot.sendMessage(chatId, `${name}\n\nВозможные действия с работой:`, getWorkOptions(id, buttonsMap[status]))
+                        return await bot.sendMessage(chatId, `${name}Возможные действия с работой:`, getWorkOptions(id, buttonsMap[status]))
                     }
 
                     if (status === 'finished' && !isOwner) {
-                        return await bot.sendMessage(chatId, `${name}\n\nВозможные действия с работой:`, getWorkOptions(id))
+                        return await bot.sendMessage(chatId, `${name}Возможные действия с работой:`, getWorkOptions(id))
                     }
 
                     if (status === 'accepted') {
-                        return await bot.sendMessage(chatId, `${name}\n\nВозможные действия с работой:`, getWorkOptions(id))
+                        return await bot.sendMessage(chatId, `${name}Возможные действия с работой:`, getWorkOptions(id))
                     }
 
                     if (status === 'declined' && !isConstructor) {
-                        return await bot.sendMessage(chatId, `${name}\n\nВозможные действия с работой:`, getWorkOptions(id))
+                        return await bot.sendMessage(chatId, `${name}Возможные действия с работой:`, getWorkOptions(id))
                     }
 
                     if (status === 'declined' && isConstructor) {
-                        return await bot.sendMessage(chatId, `${name}\n\nВозможные действия с работой:`, getWorkOptions(id, buttonsMap[status]))
+                        return await bot.sendMessage(chatId, `${name}Возможные действия с работой:`, getWorkOptions(id, buttonsMap[status]))
                     }
                 } else bot.sendMessage(chatId, 'Что-то пошло не так при переходе в статус работы')                
             }  else bot.sendMessage(chatId, 'Что-то пошло не так при получении данных по работе')
