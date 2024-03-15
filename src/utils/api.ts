@@ -127,9 +127,8 @@ export const getWorks = async (chatId: number, projectId: number, duration: numb
         if (user) {
             const token = user.getDataValue('token')
             const date = new Date()
-            date.setDate(date.getDate() - 15);
             const start = date.toISOString().split('T')[0]
-            const works = await getData(`/api/GetProjectWorksByPeriod?projectId=${projectId}&start=${start}&duration=${duration + 15}`, token)
+            const works = await getData(`/api/GetProjectWorksByPeriod?projectId=${projectId}&start=${start}&duration=${duration}`, token)
             return { ok: true, data: works }
         } else return { ok: false }
     } catch {
@@ -236,14 +235,14 @@ export const declineWork = async (chatId: number, workId: number, comment: strin
     }
 }
 
-export const loadTempTechStepImage = async (chatId: number, projId: number, stepId: number, image: FormData): Promise<boolean> => {
+export const loadTempTechStepImage = async (chatId: number, projId: number, workId: number, image: FormData): Promise<boolean> => {
     try {
         const user = await User.findOne({ where: { chatId: chatId }})
         if (user) {
             const token = user.getDataValue('token')
             
             await postData(
-                `/api/LoadTempTechStepImage?projId=${projId}&stepId=${stepId}`,
+                `/api/LoadTempTechStepImage?projId=${projId}&workId=${workId}`,
                 image,
                 token
             )

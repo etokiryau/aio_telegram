@@ -3,16 +3,19 @@ import { handleStopProcessCallback } from "../handlers/common/handleStopProcessC
 import { handleProjectCallback } from "../handlers/common/handleProjectCallback"
 import { handleLogoutCallback } from "../handlers/auth/handleLogoutCallback"
 import { handleAuthCallback } from "../handlers/auth/handleAuthCallback"
-import { handleMaterialsCallback } from "../handlers/handleMaterialsCallback"
+import { handleMaterialsCallback } from "../handlers/materials/handleMaterialsCallback"
 import { handleWorksCallback } from "../handlers/works/handleWorksCallback"
-import { handleWorkOverviewCallback } from "../handlers/works/handleWorkOverviewCallback"
+import { handleWorkOptionsCallback } from "../handlers/works/handleWorkOptionsCallback"
 import { handleCommentCallback } from "../handlers/works/handleCommentCallback"
-import { handleStatusCallback } from "../handlers/works/handleStatusCallback"
 import { handleStatusChangeCallback } from "../handlers/works/handleStatusChangeCallback"
 import { handleAnotherDateCallback } from "../handlers/works/handleAnotherDateCallback"
 import { handleCurrentDateCallback } from "../handlers/works/handleCurrentDateCallback"
 import { handleStatusConfirmCallback } from "../handlers/works/handleStatusConfirmCallback"
-import { handleNextTechStepCallback } from "../handlers/works/handleNextTechStepCallback"
+import { handleHomeCallback } from "../handlers/common/handleHomeCallback"
+import { handleTechnologyCallback } from "../handlers/works/handleTechnologyCallback"
+import { handleMaterialPeriodsCallback } from "../handlers/materials/handleMaterialPeriodsCallback"
+import { handleWorkPeriodsCallback } from "../handlers/works/handleWorkPeriodsCallback"
+import { handleCancelCallback } from "../handlers/common/handleCancelCallback"
 
 export const onCallbackQuery = (bot: TelegramBot) => {
     bot.on('callback_query', async (msg) => {
@@ -22,13 +25,17 @@ export const onCallbackQuery = (bot: TelegramBot) => {
         if (data && chatId) {
             const { action } = JSON.parse(data)
 
+            if (action === 'home') handleHomeCallback(bot, msg)
+
+            if (action === 'materials_periods') handleMaterialPeriodsCallback(bot, msg)
+
             if (action === 'materials') handleMaterialsCallback(bot, msg)
+
+            if (action === 'works_periods') handleWorkPeriodsCallback(bot, msg)
 
             if (action === 'works') handleWorksCallback(bot, msg)
 
-            if (action === 'workOverview') handleWorkOverviewCallback(bot, msg)
-
-            if (action === 'status') handleStatusCallback(bot, msg)
+            if (action === 'work') handleWorkOptionsCallback(bot, msg)
 
             if (action === 'statusChange') handleStatusChangeCallback(bot, msg)
 
@@ -38,7 +45,9 @@ export const onCallbackQuery = (bot: TelegramBot) => {
 
             if (action === 'confirm') handleStatusConfirmCallback(bot, msg)
 
-            if (action === 'teckStep_next') handleNextTechStepCallback(bot, msg)
+            if (action === 'cancel') handleCancelCallback(bot, msg)
+
+            if (action === 'technology') handleTechnologyCallback(bot, msg)
 
             if (action === 'comment') handleCommentCallback(bot, msg)
 

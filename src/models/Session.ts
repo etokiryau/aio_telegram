@@ -49,14 +49,14 @@ const Session = sequelize.define<IModelSession>('session', {
         type: DataTypes.STRING,
         defaultValue: null
     },
-    technologySteps: {
-        type: DataTypes.ARRAY(DataTypes.JSON),
-        defaultValue: null
+    messagesToDelete: {
+        type: DataTypes.ARRAY(DataTypes.INTEGER),
+        defaultValue: []
     },
-    currentStepToLoad: {
+    periodDuration: {
         type: DataTypes.INTEGER,
-        defaultValue: 0
-    },
+        defaultValue: 1
+    }
 })
 
 export default Session

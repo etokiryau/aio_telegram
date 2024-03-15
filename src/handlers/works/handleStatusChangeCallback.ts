@@ -2,18 +2,13 @@ import type TelegramBot from "node-telegram-bot-api"
 import type { CallbackQuery } from "node-telegram-bot-api"
 import Session from "../../models/Session"
 import { confirmOptions, statusDatesOptions } from "../../utils/options"
+import { deleteMessagesToDelete } from "../../utils/deleteMessagesToDelete"
 
 export const handleStatusChangeCallback = async (bot: TelegramBot, msg: CallbackQuery) => {
     const chatId = msg.message?.chat.id
 
     if (chatId) {
         try {
-            const messageId = msg.message?.message_id
-            messageId && await bot.editMessageReplyMarkup({ inline_keyboard: [] }, {
-                chat_id: chatId,
-                message_id: messageId
-            })
-        
             const session = await Session.findOne({ where: { chatId }})
 
             if (session) {
@@ -21,6 +16,7 @@ export const handleStatusChangeCallback = async (bot: TelegramBot, msg: Callback
 
                 if (currentWork) {
                     const { status } = currentWork
+                    deleteMessagesToDelete(bot, session, chatId)
                     
                     if (status === 'notStarted' || status === 'started') {
                         await bot.sendMessage(chatId, `Выберите дату ${status === 'started' ? 'завершения' : 'начала'} работы:`, statusDatesOptions)

@@ -3,16 +3,18 @@ import { logonOptions, logoutOptions } from "../utils/options"
 import User from "../models/User"
 import Session from "../models/Session"
 import { checkCurrentAction } from "../utils/checkCurrentAction"
+import { deleteMessagesToDelete } from "../utils/deleteMessagesToDelete"
 
 export const onStop = (bot: TelegramBot) => {
     bot.onText(/\/stop/, async (msg) => {
         const chatId = msg.chat.id
 
-        
         try {
             const session = await Session.findOne({ where: { chatId }})
 
             if (await checkCurrentAction(bot, session, chatId)) return
+
+            deleteMessagesToDelete(bot, session, chatId)
 
             const user = await User.findOne({ where: { chatId }})
             

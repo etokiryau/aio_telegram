@@ -2,7 +2,7 @@ import type TelegramBot from "node-telegram-bot-api"
 import type { CallbackQuery } from "node-telegram-bot-api"
 import Session from "../../models/Session"
 import { acceptWork, finishWork, startWork } from "../../utils/api"
-import { sendTechnologyStep } from "../../utils/sendTechnologyStep"
+import { stopProcessOptions } from "../../utils/options"
 
 export const handleStatusConfirmCallback = async (bot: TelegramBot, msg: CallbackQuery) => {
     const data = msg.data
@@ -10,9 +10,6 @@ export const handleStatusConfirmCallback = async (bot: TelegramBot, msg: Callbac
 
     if (chatId && data) {
         try {
-            const messageId = msg.message?.message_id
-            messageId && await bot.deleteMessage(chatId, messageId)
-        
             const session = await Session.findOne({ where: { chatId }})
            
             if (session) {
@@ -21,6 +18,7 @@ export const handleStatusConfirmCallback = async (bot: TelegramBot, msg: Callbac
 
                 if (currentWork) {
                     const { id, status, workTitle } = currentWork
+                    const messageId = msg.message?.message_id
 
                     const sendFeedback = async (ok: boolean, toStatus: string) => {
                         if (ok) {
@@ -29,30 +27,30 @@ export const handleStatusConfirmCallback = async (bot: TelegramBot, msg: Callbac
                             await bot.sendMessage(chatId, 'Что-то пошло не так при изменении статуса')
                         }
                     }
+
+                    const mes1 = await bot.sendMessage(chatId, 'Изменяем статус работы...')
                     
                     if (status === 'notStarted') {
                         const ok = await startWork(chatId, id, workDate) 
+                        messageId && await bot.deleteMessage(chatId, messageId)
+                        await bot.deleteMessage(chatId, mes1.message_id)
                         await sendFeedback(ok, 'Начато')
                         return session.update({ workDate: '' })
                     }
 
                     if (status === 'started') {
                         const ok = await finishWork(chatId, id, workDate) 
+                        messageId && await bot.deleteMessage(chatId, messageId)
+                        await bot.deleteMessage(chatId, mes1.message_id)
                         await sendFeedback(ok, 'Завершено')
-                        await session.update({ workDate: '' })
-
-                        const technologySteps = session.getDataValue('technologySteps')
-
-                        if (technologySteps && technologySteps.length > 0) {
-                            await session.update({ action: 'photo', currentStepToLoad: 0 })
-                            await bot.sendMessage(chatId, 'Ожидаем список технологических подсказок...')
-                            await sendTechnologyStep(bot, chatId, session)
-                        }
-                        return
+                        await session.update({ workDate: '', action: 'photo' })
+                        return bot.sendMessage(chatId, 'Прикрепите от 3 фото выполненной работы (крупный план, общий план, сбоку) или отмените процесс загрузки фото:', stopProcessOptions)
                     }
 
                     if (status === 'finished') {
                         const ok = await acceptWork(chatId, id)
+                        messageId && await bot.deleteMessage(chatId, messageId)
+                        await bot.deleteMessage(chatId, mes1.message_id)
                         return sendFeedback(ok, 'Принято')
                     }
                 }

@@ -1,7 +1,8 @@
 import type TelegramBot from "node-telegram-bot-api"
 import type { CallbackQuery } from "node-telegram-bot-api"
-import Session from "../models/Session"
-import { getMaterials } from "../utils/api"
+import Session from "../../models/Session"
+import { getMaterials } from "../../utils/api"
+import { addMessagesToDelete } from "../../utils/addMessagesToDelete"
 
 export const handleMaterialsCallback = async (bot: TelegramBot, msg: CallbackQuery) => {
     const { data } = msg
@@ -20,6 +21,7 @@ export const handleMaterialsCallback = async (bot: TelegramBot, msg: CallbackQue
 
             if (session) {
                 const projectId = session.getDataValue('projectId')
+                const mesIds: number[] = []
 
                 if (projectId) {
                     const resp = await getMaterials(chatId, projectId)
@@ -34,11 +36,13 @@ export const handleMaterialsCallback = async (bot: TelegramBot, msg: CallbackQue
                             }, '')
     
                             await bot.sendMessage(chatId, `Список материалов на следующий(-ие) ${payload} день(-ня):\n\n<pre language="copy">${response}</pre>`, { parse_mode: 'HTML' })
+                            .then(msg => mesIds.push(msg.message_id))
                         } else  {
                             await bot.sendMessage(chatId, `Список материалов пустой на следующий(-ие) ${payload} день(-ня)`)
+                            .then(msg => mesIds.push(msg.message_id))
                         }
-                        
                     } else bot.sendMessage(chatId, 'Что-то пошло не так при получении списка материалов')
+                    addMessagesToDelete(session, mesIds)
                 } else bot.sendMessage(chatId, 'Что-то пошло не так при получении списка материалов')
             }  else bot.sendMessage(chatId, 'Что-то пошло не так при получении списка материалов')
         } catch {

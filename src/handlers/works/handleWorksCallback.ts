@@ -9,7 +9,7 @@ import type { TWorkStatus } from "../../interfaces/work.interface"
 export const handleWorksCallback = async (bot: TelegramBot, msg: CallbackQuery) => {
     const { data } = msg
     const chatId = msg.message?.chat.id
-
+   
     if (data && chatId) {
         try {
             const { payload } = JSON.parse(data)
@@ -18,20 +18,26 @@ export const handleWorksCallback = async (bot: TelegramBot, msg: CallbackQuery) 
 
             if (session) {
                 const projectId = session.getDataValue('projectId')
+                const periodDuration = session.getDataValue('periodDuration')
 
-                if (projectId) {
-                    const resp = await getWorks(chatId, projectId, payload)
+                if (payload) {
+                    await session.update({ periodDuration: payload })
+                    messageId && await bot.deleteMessage(chatId, messageId)
+                }
+
+                if (projectId && periodDuration) {
+                    const duration = payload ?? periodDuration
+                    const resp = await getWorks(chatId, projectId, duration)
 
                     if (resp.ok) {
-                        messageId && await bot.deleteMessage(chatId, messageId)
                         const works = resp.data
                         
                         if (works.length > 0) {
-                            const worksList: {name: string, workTitle: string, status: TWorkStatus}[] = []
+                            const worksList: {name: string, workTitle: string, status: TWorkStatus, id: number}[] = []
 
                             const response = works.reduce((sum, work, i) => {
-                                const name = `${i + 1}|${work.workTitle}|${work.actualStart} - ${work.actualEnd}|${statusMap[work.status].emoji} - ${statusMap[work.status].name}|\n\n`
-                                worksList.push({ name, workTitle: work.workTitle, status: work.status })
+                                const name = `${i + 1}| ${statusMap[work.status].emoji}${work.workTitle} | ${work.actualStart} - ${work.actualEnd} | ${statusMap[work.status].name}${statusMap[work.status].emoji} |\n\n`
+                                worksList.push({ name, workTitle: work.workTitle, status: work.status, id: work.id })
                                 return sum += name
                             }, '')
                             
@@ -39,7 +45,7 @@ export const handleWorksCallback = async (bot: TelegramBot, msg: CallbackQuery) 
                             
                             await bot.sendMessage(
                                 chatId, 
-                                `Список работ на следующий(-ие) ${payload} день(-ня, -ней):\n\n<pre language="copy">${response}</pre>\nВыберите работу для дальнейшего взаимодeйствия с ней:`, 
+                                `Список работ на следующий(-ие) ${duration} день(-ня, -ней):\n\n<pre language="copy">${response}</pre>\nВыберите работу для дальнейшего взаимодeйствия с ней:`, 
                                 getWorksOptions(works)
                             )
                         } else {

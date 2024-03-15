@@ -4,6 +4,7 @@ import User from "../models/User"
 import Session from "../models/Session"
 import { getProjects } from "../utils/api"
 import { checkCurrentAction } from "../utils/checkCurrentAction"
+import { deleteMessagesToDelete } from "../utils/deleteMessagesToDelete"
 
 export const onProjects = (bot: TelegramBot) => {
     bot.onText(/\/projects/, async (msg) => {
@@ -13,6 +14,8 @@ export const onProjects = (bot: TelegramBot) => {
             const session = await Session.findOne({ where: { chatId }})
 
             if (await checkCurrentAction(bot, session, chatId)) return
+            
+            deleteMessagesToDelete(bot, session, chatId)
             
             const user = await User.findOne({ where: { chatId }})
             

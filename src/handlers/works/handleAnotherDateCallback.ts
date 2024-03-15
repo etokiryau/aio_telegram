@@ -15,7 +15,9 @@ export const handleAnotherDateCallback = async (bot: TelegramBot, msg: CallbackQ
 
             if (session) {
                 await session.update({ action: 'work_date' })
-                bot.sendMessage(chatId, 'Введите фактическую дату в формате *ГГГГ-ММ-ДД*\nИли завершите процесс ввода данных', { ...stopProcessOptions, parse_mode: 'Markdown' })
+                
+                await bot.sendMessage(chatId, 'Введите фактическую дату в формате *ГГГГ-ММ-ДД*\nИли завершите процесс ввода данных', { ...stopProcessOptions, parse_mode: 'Markdown' })
+                .then(msg => session.update({ messagesToDelete: [msg.message_id] }))
             } else bot.sendMessage(chatId, 'Что-то пошло не так при старте ввода даты')
         } catch {
             await bot.sendMessage(chatId, 'Что-то пошло не так при старте ввода даты')

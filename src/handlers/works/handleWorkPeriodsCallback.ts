@@ -1,21 +1,14 @@
 import type TelegramBot from "node-telegram-bot-api"
-import { logonOptions, worksPeriodOptions } from "../utils/options"
-import User from "../models/User"
-import Session from "../models/Session"
-import { checkCurrentAction } from "../utils/checkCurrentAction"
-import { deleteMessagesToDelete } from "../utils/deleteMessagesToDelete"
+import type { CallbackQuery } from "node-telegram-bot-api"
+import { logonOptions, worksPeriodOptions } from "../../utils/options"
+import User from "../../models/User"
 
-export const onWorks = (bot: TelegramBot) => {
-    bot.onText(/\/works/, async (msg) => {
-        const chatId = msg.chat.id
+export const handleWorkPeriodsCallback = async (bot: TelegramBot, msg: CallbackQuery) => {
+    const chatId = msg.message?.chat.id
+    const messageId = msg.message?.message_id
 
+    if (chatId) {
         try {
-            const session = await Session.findOne({ where: { chatId }})
-
-            if (await checkCurrentAction(bot, session, chatId)) return
-
-            deleteMessagesToDelete(bot, session, chatId)
-
             const user = await User.findOne({ where: { chatId }})
             
             if (user) {
@@ -27,9 +20,10 @@ export const onWorks = (bot: TelegramBot) => {
                     logonOptions
                 )
             }
+            messageId && bot.deleteMessage(chatId, messageId)
         } catch(error) {
             console.error('Error:', error);
             bot.sendMessage(chatId, 'Что-то пошло не так')
         }
-    })
+    }
 }

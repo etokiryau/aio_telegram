@@ -3,7 +3,6 @@ import { Blob } from "buffer"
 import Session from "../models/Session"
 import { getImageArrayBuffer } from "../utils/getImageArrayBuffer"
 import { loadTempTechStepImage } from "../utils/api"
-import { sendTechnologyStep } from "../utils/sendTechnologyStep"
 
 export const onPhoto = (bot: TelegramBot) => {
     bot.on('photo', async (msg) => {
@@ -27,30 +26,21 @@ export const onPhoto = (bot: TelegramBot) => {
                     const imageBuffer = await getImageArrayBuffer(filePath)
                     console.log('buffer', imageBuffer)
                     const formData = new FormData()
-                    const blob = new Blob([imageBuffer])
+                    const blob = new globalThis.Blob([imageBuffer])
                     console.log('blob', blob)
-                    // @ts-ignore
-                    formData.append('image', blob, { filename: file.file_path })
+                    formData.append('image', blob)
 
                     const projectId = session.getDataValue('projectId')
-                    const currentStep = session.getDataValue('currentStepToLoad')
-                    const technologySteps = session.getDataValue('technologySteps')
 
-                    if (typeof projectId !== 'undefined' && typeof currentStep !== 'undefined' && technologySteps && technologySteps[currentStep]) {
-                        const ok = await loadTempTechStepImage(chatId, projectId, technologySteps[currentStep].id, formData)
-                        console.log('ok', ok)
-                        if (ok) {
-                            if (currentStep === (technologySteps.length - 1)) {
-                                await session.update({ action: 'idle', currentStepToLoad: 0 })
-                                await bot.sendMessage(chatId, 'Загрузка файлов по всем технологическим подсказкам завершена')
-                            } else {
-                                await session.update({ currentStepToLoad: currentStep + 1 })
-                                await sendTechnologyStep(bot, chatId, session)
-                            }
-                        } else {
-                            await bot.sendMessage(chatId, 'Что-то пошло не так при загрузке файла')
-                        }
-                    } else await bot.sendMessage(chatId, 'Что-то пошло не так при загрузке файла')
+                    // if (typeof projectId !== 'undefined') {
+                    //     const ok = await loadTempTechStepImage(chatId, projectId, formData)
+                    //     console.log('ok', ok)
+                    //     if (ok) {
+                    //         await bot.sendMessage(chatId, 'Загрузка файлов по всем технологическим подсказкам завершена')
+                    //     } else {
+                    //         await bot.sendMessage(chatId, 'Что-то пошло не так при загрузке файла')
+                    //     }
+                    // } else await bot.sendMessage(chatId, 'Что-то пошло не так при загрузке файла')
                 }
             } catch (e) {
                 console.log(e)

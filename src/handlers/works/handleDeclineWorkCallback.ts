@@ -2,6 +2,7 @@ import type TelegramBot from "node-telegram-bot-api"
 import type { CallbackQuery } from "node-telegram-bot-api"
 import Session from "../../models/Session"
 import { stopProcessOptions } from "../../utils/options"
+import { addMessagesToDelete } from "../../utils/addMessagesToDelete"
 
 export const handleDeclineWorkCallback = async (bot: TelegramBot, msg: CallbackQuery) => {
     const chatId = msg.message?.chat.id
@@ -14,8 +15,9 @@ export const handleDeclineWorkCallback = async (bot: TelegramBot, msg: CallbackQ
             const session = await Session.findOne({ where: { chatId }})
 
             if (session) {
-                session.update({ action: 'work_decline' })
-                bot.sendMessage(chatId, 'Введите, пожалуйста, комментарий к отклоняемой работе.\nИли завершите процесс ввода данных', stopProcessOptions)
+                await session.update({ action: 'work_decline' })
+                const mes1 = bot.sendMessage(chatId, 'Введите, пожалуйста, комментарий к отклоняемой работе.\nИли завершите процесс ввода данных', stopProcessOptions)
+                addMessagesToDelete(session, [(await mes1).message_id])
             } else bot.sendMessage(chatId, 'Что-то пошло не так при старте ввода комментария')
         } catch {
             await bot.sendMessage(chatId, 'Что-то пошло не так при старте ввода комментария')

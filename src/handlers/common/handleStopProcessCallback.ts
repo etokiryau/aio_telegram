@@ -14,10 +14,15 @@ export const handleStopProcessCallback = async (bot: TelegramBot, msg: CallbackQ
             if (sessionAction?.includes('auth')) {
                 await session?.destroy()
             } else {
-                session?.update({ action: 'idle', currentStepToLoad: 0 })
+                session?.update({ action: 'idle' })
             }
     
-            if (sessionAction !== 'idle') await bot.sendMessage(chatId, 'Процесс ввода/загрузки данных остановлен')
+            if (sessionAction !== 'idle') {
+                const mes1 = await bot.sendMessage(chatId, 'Процесс ввода/загрузки данных остановлен')
+                setTimeout(() => {
+                    bot.deleteMessage(chatId, mes1.message_id)
+                }, 2000)
+            }
     
             messageId && await bot.deleteMessage(chatId, messageId)
         } catch (e) {
