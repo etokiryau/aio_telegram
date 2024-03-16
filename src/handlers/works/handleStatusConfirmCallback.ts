@@ -43,8 +43,11 @@ export const handleStatusConfirmCallback = async (bot: TelegramBot, msg: Callbac
                         messageId && await bot.deleteMessage(chatId, messageId)
                         await bot.deleteMessage(chatId, mes1.message_id)
                         await sendFeedback(ok, 'Завершено')
-                        await session.update({ workDate: '', action: 'photo' })
-                        return bot.sendMessage(chatId, 'Прикрепите от 3 фото выполненной работы (крупный план, общий план, сбоку) или отмените процесс загрузки фото:', stopProcessOptions)
+                        
+                        if (ok) {
+                            await session.update({ workDate: '', action: 'photo' })
+                            return bot.sendMessage(chatId, 'Прикрепите от 3 фото выполненной работы (крупный план, общий план, сбоку) или отмените процесс загрузки фото:', stopProcessOptions)
+                        }
                     }
 
                     if (status === 'finished') {

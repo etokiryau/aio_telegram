@@ -16,6 +16,7 @@ import { handleTechnologyCallback } from "../handlers/works/handleTechnologyCall
 import { handleMaterialPeriodsCallback } from "../handlers/materials/handleMaterialPeriodsCallback"
 import { handleWorkPeriodsCallback } from "../handlers/works/handleWorkPeriodsCallback"
 import { handleCancelCallback } from "../handlers/common/handleCancelCallback"
+import { handleDeclineWorkCallback } from "../handlers/works/handleDeclineWorkCallback"
 
 export const onCallbackQuery = (bot: TelegramBot) => {
     bot.on('callback_query', async (msg) => {
@@ -38,6 +39,8 @@ export const onCallbackQuery = (bot: TelegramBot) => {
             if (action === 'work') handleWorkOptionsCallback(bot, msg)
 
             if (action === 'statusChange') handleStatusChangeCallback(bot, msg)
+
+            if (action === 'work_decline') handleDeclineWorkCallback(bot, msg)
 
             if (action === 'date_current') handleCurrentDateCallback(bot, msg)
 

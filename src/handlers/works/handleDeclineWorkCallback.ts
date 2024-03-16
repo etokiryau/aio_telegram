@@ -16,8 +16,8 @@ export const handleDeclineWorkCallback = async (bot: TelegramBot, msg: CallbackQ
 
             if (session) {
                 await session.update({ action: 'work_decline' })
-                const mes1 = bot.sendMessage(chatId, 'Введите, пожалуйста, комментарий к отклоняемой работе.\nИли завершите процесс ввода данных', stopProcessOptions)
-                addMessagesToDelete(session, [(await mes1).message_id])
+                const mes1 = await bot.sendMessage(chatId, 'Введите, пожалуйста, комментарий к отклоняемой работе.\nИли завершите процесс ввода данных', stopProcessOptions)
+                addMessagesToDelete(session, [mes1.message_id])
             } else bot.sendMessage(chatId, 'Что-то пошло не так при старте ввода комментария')
         } catch {
             await bot.sendMessage(chatId, 'Что-то пошло не так при старте ввода комментария')
