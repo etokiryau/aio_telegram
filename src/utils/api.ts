@@ -2,7 +2,7 @@ import axios from 'axios';
 import User from '../models/User';
 import dotenv from "dotenv"
 import type { IProject } from '../interfaces/project.interface';
-import type { ISummaryMaterial } from '../interfaces/materials.interface';
+import type { ISurveyMaterial } from '../interfaces/materials.interface';
 import type { IWork } from '../interfaces/work.interface';
 import type { ITechnologyStep } from '../interfaces/technologyStep.interface';
 import { TUserRoles } from '../interfaces/userRoles.type';
@@ -33,7 +33,7 @@ const getData = async (endpoint: string, token?: string) => {
             const response = await axios({ method: 'get', url: `${BASE_URL}${endpoint}`, headers: {
                 Authorization: `Bearer ${token}`,
             }})
-            console.log(response.data)
+            // console.log(response.data)
             return response.data
         } else {
             const response = await axios.get(`${BASE_URL}${endpoint}`)
@@ -41,7 +41,7 @@ const getData = async (endpoint: string, token?: string) => {
             return response.data
         }
     } catch (error) {
-        console.log(error)
+        console.log('error message', error)
         throw new Error(getErrorMessage(error))
     }
 };
@@ -55,15 +55,15 @@ const postData = async (endpoint: string, data: any, token?: string) => {
                 data, 
                 headers: { Authorization: `Bearer ${token}` },
             })
-            console.log(response)
+            // console.log(response)
             return response
         } else {
             const response = await axios({ method: 'post', url: `${BASE_URL}${endpoint}`, data })
-            console.log(response)
+            // console.log(response)
             return response
         }
     } catch (error) {
-        console.log(error)
+        console.log('error message', error)
         throw new Error(getErrorMessage(error))
     }
 };
@@ -108,12 +108,21 @@ export const getUserRoles = async (chatId: number, projectId: number): Promise<T
     }
 }
 
-export const getMaterials = async (chatId: number, projectId: number): Promise<TResponse<ISummaryMaterial[]>> => {
+export const getMaterials = async (chatId: number, projectId: number, duration: number): Promise<TResponse<ISurveyMaterial[]>> => {
     try {
         const user = await User.findOne({ where: { chatId: chatId }})
         if (user) {
             const token = user.getDataValue('token')
-            const materials = await getData(`/api/GetProjectMaterials?projectId=${projectId}`, token)
+
+            const from = new Date().toISOString().split('T')[0]
+            const toDate = new Date();
+            toDate.setDate(toDate.getDate() + duration);
+            const to = toDate.toISOString().split('T')[0]
+
+            const materials = await getData(
+                `/api/GetRequiredMaterials?projectId=${projectId}&from=${from}&to=${to}`, 
+                token
+            )
             return { ok: true, data: materials }
         } else return { ok: false }
     } catch {

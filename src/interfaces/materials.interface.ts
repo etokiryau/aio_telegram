@@ -1,21 +1,14 @@
-export interface ISummaryMaterial {
+export interface ISurveyMaterial {
+    code: string
+    groupName: string | null
     name: string
-    description: string
+    value: number
     units: string
     dimension: number
-    purchased: {
-        value: number
-        percent: number
-    }
-    used: {
-        value: number
-        percent: number
-    }
-    inProject: {
-        value: number
-    }
-    left: {
-        value: number
-        percent: number
+    work: {
+        finishDate: string
+        id: number
+        name: string
+        startDate: string
     }
 }
