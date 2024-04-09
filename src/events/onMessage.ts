@@ -10,7 +10,7 @@ import { handleDeclineWorkMessage } from "../handlers/works/handleDeclineWorkMes
 export const onMessage = (bot: TelegramBot) => {
     bot.on('message', async (msg) => {
         const { text, chat: { id: chatId }} = msg
-
+        console.log(msg)
         if (text && text.startsWith('/')) return
 
         try {

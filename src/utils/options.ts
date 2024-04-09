@@ -118,6 +118,7 @@ export const confirmOptions: SendMessageOptions = {
 export const commentBackOptions: SendMessageOptions = {
     reply_markup: { 
         inline_keyboard: [
+            [{ text: 'Завершить процесс', callback_data: JSON.stringify({ action: 'stopProcess' }) }],
             [{ text: 'Назад', callback_data: JSON.stringify({ action: 'cancel' }) }]
         ] 
     }

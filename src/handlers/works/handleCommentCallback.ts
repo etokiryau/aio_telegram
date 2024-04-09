@@ -15,7 +15,7 @@ export const handleCommentCallback = async (bot: TelegramBot, msg: CallbackQuery
                 await session.update({ action: 'work_comment' })
                 deleteMessagesToDelete(bot, session, chatId)
 
-                const mes1 = await bot.sendMessage(chatId, 'Введите, пожалуйста, комментарий.\nИли завершите процесс ввода данных', stopProcessOptions)
+                const mes1 = await bot.sendMessage(chatId, 'Введите, пожалуйста, комментарий или прикрепите изображение к чату.\nИли завершите процесс ввода данных', stopProcessOptions)
                 
                 const messagesToDelete = session.getDataValue('messagesToDelete')
                 messagesToDelete && await session.update({ messagesToDelete: [...messagesToDelete, mes1.message_id]})

@@ -158,15 +158,16 @@ export const getWorkTechSteps = async (chatId: number, workId: number): Promise<
     }
 }
 
-export const addWorkComment = async (chatId: number, workId: number, comment: string): Promise<boolean> => {
+export const addWorkComment = async (chatId: number, workId: number, comment: string, file: FormData | null): Promise<boolean> => {
     try {
         const user = await User.findOne({ where: { chatId: chatId }})
         if (user) {
             const token = user.getDataValue('token')
-            await getData(
-                `/api/AddWorkComments?workId=${workId}&comment=${comment}`, 
+            await postData(
+                `/api/AddWorkComment?workId=${workId}&comment=${comment}`,
+                file,
                 token
-            );
+            )
             return true
         } else return false
     } catch {
