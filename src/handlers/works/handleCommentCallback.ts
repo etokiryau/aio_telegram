@@ -1,7 +1,7 @@
 import type TelegramBot from "node-telegram-bot-api"
 import type { CallbackQuery } from "node-telegram-bot-api"
 import Session from "../../models/Session"
-import { stopProcessOptions } from "../../utils/options"
+import { commentPhotosOptions } from "../../utils/options"
 import { deleteMessagesToDelete } from "../../utils/deleteMessagesToDelete"
 
 export const handleCommentCallback = async (bot: TelegramBot, msg: CallbackQuery) => {
@@ -15,10 +15,9 @@ export const handleCommentCallback = async (bot: TelegramBot, msg: CallbackQuery
                 await session.update({ action: 'work_comment' })
                 deleteMessagesToDelete(bot, session, chatId)
 
-                const mes1 = await bot.sendMessage(chatId, 'Введите, пожалуйста, комментарий или прикрепите изображение к чату.\nИли завершите процесс ввода данных', stopProcessOptions)
-                
+                const mes1 = await bot.sendMessage(chatId, 'Введите комментарий или прикрепите изображение к чату (После загрузки изображений в чат нажмите кнопку *Отправить*).\nИли завершите процесс ввода данных:', { parse_mode: 'Markdown', ...commentPhotosOptions })
                 const messagesToDelete = session.getDataValue('messagesToDelete')
-                messagesToDelete && await session.update({ messagesToDelete: [...messagesToDelete, mes1.message_id]})
+                messagesToDelete && await session.update({ photos: [], commentWithPhotos: '', messagesToDelete: [...messagesToDelete, mes1.message_id]})
             } else bot.sendMessage(chatId, 'Что-то пошло не так при старте ввода комментария')
         } catch {
             await bot.sendMessage(chatId, 'Что-то пошло не так при старте ввода комментария')

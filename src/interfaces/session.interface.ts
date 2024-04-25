@@ -16,6 +16,8 @@ interface ISession {
     declineComment?: string
     messagesToDelete?: number[]
     periodDuration?: number
+    photos?: string[]
+    commentWithPhotos?: string
 }
 
 export interface IModelSession extends Model<ISession> {}

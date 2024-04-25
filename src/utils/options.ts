@@ -143,3 +143,19 @@ export const stopProcessOptions: SendMessageOptions = {
         ] 
     }
 }
+
+export const workPhotosOptions: SendMessageOptions = {
+    reply_markup: { 
+        inline_keyboard: [
+            [{ text: 'Отправить', callback_data: JSON.stringify({ action: 'work_photos' }) }, { text: 'Завершить процесс', callback_data: JSON.stringify({ action: 'stopProcess' }) }],
+        ] 
+    }
+}
+
+export const commentPhotosOptions: SendMessageOptions = {
+    reply_markup: { 
+        inline_keyboard: [
+            [{ text: 'Отправить', callback_data: JSON.stringify({ action: 'comment_photos' }) }, { text: 'Завершить процесс', callback_data: JSON.stringify({ action: 'stopProcess' }) }],
+        ] 
+    }
+}

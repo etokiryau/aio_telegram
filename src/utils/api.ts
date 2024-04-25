@@ -245,15 +245,14 @@ export const declineWork = async (chatId: number, workId: number, comment: strin
     }
 }
 
-export const loadTempTechStepImage = async (chatId: number, projId: number, workId: number, image: FormData): Promise<boolean> => {
+export const loadTechImages = async (chatId: number, projId: number, workId: number, images: FormData): Promise<boolean> => {
     try {
         const user = await User.findOne({ where: { chatId: chatId }})
         if (user) {
             const token = user.getDataValue('token')
-            
             await postData(
-                `/api/LoadTempTechStepImage?projId=${projId}&workId=${workId}`,
-                image,
+                `/api/LoadTechImages?projectId=${projId}&workId=${workId}`,
+                images,
                 token
             )
             return true

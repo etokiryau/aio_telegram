@@ -17,6 +17,8 @@ import { handleMaterialPeriodsCallback } from "../handlers/materials/handleMater
 import { handleWorkPeriodsCallback } from "../handlers/works/handleWorkPeriodsCallback"
 import { handleCancelCallback } from "../handlers/common/handleCancelCallback"
 import { handleDeclineWorkCallback } from "../handlers/works/handleDeclineWorkCallback"
+import { handleSendWorkPhotosCallback } from "../handlers/works/handleSendWorkPhotosCallback"
+import { handleSendCommentPhotosCallback } from "../handlers/works/handleSendCommentPhotosCallback"
 
 export const onCallbackQuery = (bot: TelegramBot) => {
     bot.on('callback_query', async (msg) => {
@@ -38,6 +40,8 @@ export const onCallbackQuery = (bot: TelegramBot) => {
 
             if (action === 'work') handleWorkOptionsCallback(bot, msg)
 
+            if (action === 'work_photos') handleSendWorkPhotosCallback(bot, msg)
+
             if (action === 'statusChange') handleStatusChangeCallback(bot, msg)
 
             if (action === 'work_decline') handleDeclineWorkCallback(bot, msg)
@@ -53,6 +57,8 @@ export const onCallbackQuery = (bot: TelegramBot) => {
             if (action === 'technology') handleTechnologyCallback(bot, msg)
 
             if (action === 'comment') handleCommentCallback(bot, msg)
+
+            if (action === 'comment_photos') handleSendCommentPhotosCallback(bot, msg)
 
             if (action === 'stopProcess') handleStopProcessCallback(bot, msg)
 

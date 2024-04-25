@@ -2,7 +2,7 @@ import type TelegramBot from "node-telegram-bot-api"
 import type { CallbackQuery } from "node-telegram-bot-api"
 import Session from "../../models/Session"
 import { acceptWork, finishWork, startWork } from "../../utils/api"
-import { stopProcessOptions } from "../../utils/options"
+import { workPhotosOptions } from "../../utils/options"
 
 export const handleStatusConfirmCallback = async (bot: TelegramBot, msg: CallbackQuery) => {
     const data = msg.data
@@ -45,8 +45,8 @@ export const handleStatusConfirmCallback = async (bot: TelegramBot, msg: Callbac
                         await sendFeedback(ok, 'Завершено')
                         
                         if (ok) {
-                            await session.update({ workDate: '', action: 'photo' })
-                            return bot.sendMessage(chatId, 'Прикрепите от 3 фото выполненной работы (крупный план, общий план, сбоку) или отмените процесс загрузки фото:', stopProcessOptions)
+                            await session.update({ workDate: '', action: 'photo', photos: [] })
+                            return bot.sendMessage(chatId, 'Прикрепите от 3 фото выполненной работы (крупный план, общий план, сбоку).\nПосле загрузки изображений в чат нажмите кнопку *Отправить*.\nИли отмените процесс загрузки фото:', { parse_mode: 'Markdown', ...workPhotosOptions })
                         }
                     }
 

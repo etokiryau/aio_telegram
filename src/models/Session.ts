@@ -56,6 +56,14 @@ const Session = sequelize.define<IModelSession>('session', {
     periodDuration: {
         type: DataTypes.INTEGER,
         defaultValue: 1
+    },
+    photos: {
+        type: DataTypes.ARRAY(DataTypes.STRING),
+        defaultValue: []
+    },
+    commentWithPhotos: {
+        type: DataTypes.STRING,
+        defaultValue: ''
     }
 })
 
