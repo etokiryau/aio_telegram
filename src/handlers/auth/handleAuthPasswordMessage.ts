@@ -3,7 +3,7 @@ import type { Message } from "node-telegram-bot-api"
 import type { IModelSession } from "../../interfaces/session.interface"
 
 import { getProjectOptions, homeOptions, logonAgainOptions } from "../../utils/options"
-import { getProjects, handleLogin } from "../../utils/api"
+import { getProjects, getUserRoles, handleLogin } from "../../utils/api"
 
 export const handleAuthPasswordMessage = async (bot: TelegramBot, session: IModelSession, msg: Message) => {
     const { text, chat: { id: chatId }} = msg
@@ -29,9 +29,13 @@ export const handleAuthPasswordMessage = async (bot: TelegramBot, session: IMode
                 if (projects.length > 1) {
                     await bot.sendMessage(chatId, 'Выберите проект, с которым хотите работать:', getProjectOptions(projects))
                 } else {
-                    await session.update({ projectName: projects[0]?.name , projectId: projects[0]?.id})
-                    await bot.sendMessage(chatId, `Ваш активный проект - *${projects[0]?.name}*`, { parse_mode: 'Markdown' })
-                    await bot.sendMessage(chatId, 'Список действий с проектом:', homeOptions)
+                    const resp = await getUserRoles(chatId, projects[0]?.id)
+
+                    if (resp.ok) {
+                        await session.update({ projectName: projects[0]?.name , projectId: projects[0]?.id, userRoles: resp.data })
+                        await bot.sendMessage(chatId, `Ваш активный проект - *${projects[0]?.name}*`, { parse_mode: 'Markdown' })
+                        await bot.sendMessage(chatId, 'Список действий с проектом:', homeOptions)
+                    }
                 }
             } else {
                 await bot.sendMessage(chatId, 'Произошла ошибка при получении проектов. Попробуйте еще раз')

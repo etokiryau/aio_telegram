@@ -15,7 +15,7 @@ export const handleWorkOptionsCallback = async (bot: TelegramBot, msg: CallbackQ
             const session = await Session.findOne({ where: { chatId }})
 
             messageId && await bot.deleteMessage(chatId, messageId)
-
+           
             if (session) {
                 const worksList = session.getDataValue('worksList')
                 const userRoles = session.getDataValue('userRoles')
@@ -62,7 +62,7 @@ export const handleWorkOptionsCallback = async (bot: TelegramBot, msg: CallbackQ
                     if (status === 'declined' && isConstructor) {
                         return await bot.sendMessage(chatId, `${name}Возможные действия с работой:`, getWorkOptions(id, buttonsMap[status]))
                     }
-                } else bot.sendMessage(chatId, 'Что-то пошло не так при переходе в статус работы')                
+                } else bot.sendMessage(chatId, 'Что-то пошло не так при получении данных по работе')                
             }  else bot.sendMessage(chatId, 'Что-то пошло не так при получении данных по работе')
         } catch (e) {
             console.log(e)

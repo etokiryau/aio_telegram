@@ -6,7 +6,6 @@ export const getFormData = async (bot: TelegramBot, photos: string[]): Promise<F
 
     for (const photo of photos) {
         const file = await bot.getFile(photo)
-        console.log('file', file)
         const filePath = `https://api.telegram.org/file/bot${process.env.TELEGRAM_TOKEN}/${file.file_path}`;
         const imageBuffer = await getImageArrayBuffer(filePath)
         const blob = new globalThis.Blob([imageBuffer])
